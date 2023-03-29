@@ -73,7 +73,7 @@ class Rates extends React.Component {
       : (element = e.target.parentElement);
 
     this.setState({ rateBase: element.getAttribute("data-value") });
-    $(".rate-current").html($(element).html());
+
     $(".scrollable-menu").toggle();
   }
 
@@ -83,6 +83,62 @@ class Rates extends React.Component {
     return (
       <div className="centre-container rates">
         <div className="rates-options">
+          {/* <p>Base:</p> */}
+          <label>
+            Base
+            <ul>
+              <li onClick={this.toggleCurrency} className="rate-current">
+                <img
+                  src={`https://www.countryflagicons.com/FLAT/64/${rateBase.slice(
+                    0,
+                    -1
+                  )}.png`}
+                  alt=""
+                />{" "}
+                {rateBase}
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  size="2xs"
+                  className="rate-icon"
+                />
+              </li>
+              <li
+                className="scrollable-menu rate-select"
+                style={{ display: "none" }}
+              >
+                <ul>
+                  {currencies.map((currency, index) => {
+                    return (
+                      <li
+                        onClick={this.changeCurrency}
+                        key={index}
+                        data-value={currency}
+                      >
+                        <img
+                          src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
+                            0,
+                            -1
+                          )}.png`}
+                          alt=""
+                          data-value={currency}
+                        />
+                        {currency}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            </ul>
+          </label>
+          <label>
+            Amount<p>1</p>
+          </label>
+          <button onClick={this.fetchRates} type="button">
+            change
+          </button>
+        </div>
+
+        {/* <div className="rates-options">
           <ul>
             <li onClick={this.toggleCurrency} className="rate-current">
               <img
@@ -130,7 +186,7 @@ class Rates extends React.Component {
           <button onClick={this.fetchRates} type="button">
             change
           </button>
-        </div>
+        </div> */}
 
         <div className="rates-container">
           <div className="rates-data">
