@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/moedas/static/css/main.dcb5c94e.css",
+    "main.js": "/moedas/static/js/main.48d3355d.js",
+    "static/js/787.a284ccb9.chunk.js": "/moedas/static/js/787.a284ccb9.chunk.js",
+    "static/media/5570863.jpg": "/moedas/static/media/5570863.dd3aa03854a8eee2508d.jpg",
+    "index.html": "/moedas/index.html",
+    "main.dcb5c94e.css.map": "/moedas/static/css/main.dcb5c94e.css.map",
+    "main.48d3355d.js.map": "/moedas/static/js/main.48d3355d.js.map",
+    "787.a284ccb9.chunk.js.map": "/moedas/static/js/787.a284ccb9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.dcb5c94e.css",
+    "static/js/main.48d3355d.js"
+  ]
+}
