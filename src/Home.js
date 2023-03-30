@@ -41,14 +41,6 @@ class Convert extends React.Component {
 
   componentDidMount() {
     this.fetchCurrencies();
-
-    $(document).on("click", function (e) {
-      if (!$(e.target).is("li")) {
-        if ($(".scrollable-menu").attr("style", "display:block")) {
-          $(".scrollable-menu").attr("style", "display:none");
-        }
-      }
-    });
   }
 
   fetchCurrencies() {
