@@ -5,6 +5,7 @@ import Home from "./Home";
 import Rates from "./Rates";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import CheckClick from "./Click";
 
 const NotFound = () => {
   return <h2>404 Not Found</h2>;
@@ -20,6 +21,7 @@ const App = () => {
         <Route component={NotFound} />
       </Switch>
       <Footer />
+      <CheckClick />
     </Router>
   );
 };
