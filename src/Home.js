@@ -1,6 +1,7 @@
 import React from "react";
 import { json, checkStatus } from "./utils";
 import $ from "jquery";
+import "react-dropdown/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,7 +14,7 @@ class Convert extends React.Component {
       toCurrency: "EUR",
       currentFromCurrency: "",
       currentToCurrency: "",
-      currentAmount: 0,
+      currentAmount: 10,
       amount: 10,
       results: [],
       error: "",
@@ -24,19 +25,7 @@ class Convert extends React.Component {
     this.fetchCurrencies = this.fetchCurrencies.bind(this);
     this.changeFromCurrency = this.changeFromCurrency.bind(this);
     this.changeToCurrency = this.changeToCurrency.bind(this);
-    this.toggleCurrency = this.toggleCurrency.bind(this);
-    this.selectCurrency = this.selectCurrency.bind(this);
     this.swapCurrencies = this.swapCurrencies.bind(this);
-  }
-
-  toggleCurrency(e) {
-    $(e.target).closest("ul").children("li:not(.init)").toggle();
-  }
-
-  selectCurrency(e) {
-    this.setState({ fromCurrency: e.target.getAttribute("data-value") });
-    $(e.target).closest("ul").children(".init").html($(e.target).html());
-    $(e.target).closest("ul").children("li:not(.init)").toggle();
   }
 
   componentDidMount() {
@@ -61,46 +50,26 @@ class Convert extends React.Component {
   }
 
   changeFromCurrency(e) {
-    let element;
-    e.target.tagName === "LI"
-      ? (element = e.target)
-      : (element = e.target.parentElement);
-
-    this.setState({ fromCurrency: element.getAttribute("data-value") });
-    $(element).closest("ul").children(".init").html($(element).html());
-    $(element).closest("ul").children("li:not(.init)").toggle();
+    this.setState({ fromCurrency: e.target.value });
   }
 
   changeToCurrency(e) {
-    let element;
-    e.target.tagName === "LI"
-      ? (element = e.target)
-      : (element = e.target.parentElement);
-
-    this.setState({ toCurrency: element.getAttribute("data-value") });
-    $(element).closest("ul").children(".init").html($(element).html());
-    $(element).closest("ul").children("li:not(.init)").toggle();
+    this.setState({ toCurrency: e.target.value });
   }
 
   swapCurrencies() {
     let { fromCurrency, toCurrency } = this.state;
-    let from = $(".from-currency").html();
-    let to = $(".to-currency").html();
 
     this.setState({ fromCurrency: toCurrency, toCurrency: fromCurrency });
-    $(".from-currency").html(to);
-    $(".to-currency").html(from);
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    this.setState({ results: [] });
-
+  handleSubmit() {
     let { amount, fromCurrency, toCurrency } = this.state;
-
-    this.setState({ currentAmount: amount });
-    this.setState({ currentFromCurrency: fromCurrency });
-    this.setState({ currentToCurrency: toCurrency });
+    this.setState({
+      currentFromCurrency: fromCurrency,
+      currentToCurrency: toCurrency,
+      currentAmount: amount,
+    });
 
     fetch(
       `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`
@@ -115,6 +84,8 @@ class Convert extends React.Component {
       });
 
     $(".result").attr("style", "display:block");
+
+    this.setState({ results: [] });
   }
 
   render() {
@@ -124,6 +95,8 @@ class Convert extends React.Component {
       results,
       currentFromCurrency,
       currentToCurrency,
+      fromCurrency,
+      toCurrency,
       currentAmount,
     } = this.state;
 
@@ -131,86 +104,50 @@ class Convert extends React.Component {
       <div className="centre-container">
         <div className="content-container">
           <div>
-            <p className="label">Amount</p>
-            <input
-              type="text"
-              id="amount"
-              value={amount}
-              onChange={this.changeAmount}
-            />
+            <label className="currency">
+              Amount
+              <input
+                type="text"
+                id="amount"
+                value={amount}
+                onChange={this.changeAmount}
+              />
+            </label>
           </div>
           <div className="currency-container">
-            <div>
-              <p className="label">From</p>
-              <ul className="currency-options">
-                <li
-                  className="init from-currency"
-                  onClick={this.toggleCurrency}
-                >
-                  <img
-                    src="https://www.countryflagicons.com/FLAT/64/US.png"
-                    alt=""
-                  />
-                  USD
-                </li>
-                <li className="scrollable-menu" style={{ display: "none" }}>
-                  {currencies.map((currency, index) => {
-                    return (
-                      <li
-                        onClick={this.changeFromCurrency}
-                        key={index}
-                        data-value={currency}
-                      >
-                        <img
-                          src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
-                            0,
-                            -1
-                          )}.png`}
-                          alt=""
-                          data-value={currency}
-                        />
-                        {currency}
-                      </li>
-                    );
-                  })}
-                </li>
-              </ul>
-            </div>
+            <label className="currency">
+              From:
+              <select value={fromCurrency} onChange={this.changeFromCurrency}>
+                <option value={fromCurrency}>{fromCurrency}</option>
+                {currencies.map((currency, index) => {
+                  return <option value={currency}>{currency}</option>;
+                })}
+              </select>
+            </label>
             <div className="icon" onClick={this.swapCurrencies}>
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </div>
-            <div>
-              <p className="label">To</p>
-              <ul className="currency-options">
-                <li className="init to-currency" onClick={this.toggleCurrency}>
-                  <img
-                    src="https://www.countryflagicons.com/FLAT/64/EU.png"
-                    alt=""
-                  />
-                  EUR
-                </li>
-                <li className="scrollable-menu" style={{ display: "none" }}>
-                  {currencies.map((currency, index) => {
-                    return (
-                      <li
-                        onClick={this.changeToCurrency}
-                        key={index}
-                        data-value={currency}
-                      >
-                        <img
-                          src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
-                            0,
-                            -1
-                          )}.png`}
-                          alt=""
-                        />
-                        {currency}
-                      </li>
-                    );
-                  })}
-                </li>
-              </ul>
-            </div>
+            <label className="currency">
+              To:
+              <select value={toCurrency} onChange={this.changeToCurrency}>
+                <option value={toCurrency}>{toCurrency}</option>
+                {currencies.map((currency, index) => {
+                  return (
+                    <option value={currency}>
+                      {" "}
+                      <img
+                        src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
+                          0,
+                          -1
+                        )}.png`}
+                        alt=""
+                      />{" "}
+                      {currency}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
             <button
               type="button"
               onClick={this.handleSubmit}

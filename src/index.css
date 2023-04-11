@@ -15,7 +15,7 @@
   background-image: url(../public/5570863.jpg);
   background-size: cover;
   height: 100vh;
-  /* overflow: hidden; */
+  overflow: auto;
 }
 
 a {
@@ -37,6 +37,13 @@ a:hover {
   padding-top: 2em;
 }
 
+@media (max-width: 900px) {
+  .nav,
+  .footer {
+    margin: 0 4em;
+  }
+}
+
 .logo {
   font-family: "Concert One", cursive;
   font-size: 3rem;
@@ -51,6 +58,20 @@ a:hover {
   font-family: "Dosis", sans-serif;
   font-size: 1.1rem;
   margin-left: 2em;
+}
+
+@media (max-width: 650px) {
+  .logo {
+    font-size: 2rem;
+  }
+
+  .nav-items p {
+    font-size: 1rem;
+  }
+
+  .nav-items {
+    text-align: end;
+  }
 }
 
 /* converter */
@@ -78,10 +99,76 @@ a:hover {
   min-width: 200px;
 }
 
+@media (max-width: 1250px) {
+  .centre-container {
+    width: 80%;
+    overflow: unset;
+    margin-bottom: 4em;
+  }
+
+  .content-container {
+    margin: 5em 1em;
+    padding-top: 2em;
+  }
+}
+
+@media (max-width: 1000px) {
+  .currency-container div:not(.icon),
+  input {
+    max-width: 150px;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 780px) {
+  .content-container {
+    flex-direction: column;
+  }
+
+  .currency-container {
+    margin-top: 1em;
+    margin-left: 0;
+  }
+}
+
 .icon {
   padding: 5px 8px;
   margin: auto 1em;
   cursor: pointer;
+}
+
+@media (max-width: 550px) {
+  .currency-container {
+    flex-direction: column;
+  }
+
+  .icon {
+    padding: 0;
+    margin: 1em 0;
+    height: min-content;
+  }
+
+  .icon svg {
+    transform: rotate(90deg);
+  }
+
+  .centre-container {
+    height: auto;
+    width: 90%;
+  }
+
+  .content-container {
+    width: fit-content;
+    margin: 0 auto 3em;
+  }
+
+  .nav {
+    margin: 0 1.5em;
+  }
+
+  .footer {
+    padding: 2em;
+  }
 }
 
 img {
@@ -94,13 +181,23 @@ ul {
   list-style: none;
 }
 
+.currency {
+  display: flex;
+  flex-direction: column;
+}
+
+select {
+  width: 200px;
+  padding: 1.1em 0.9em;
+  font-size: 0.9rem;
+}
+
 .currency-options {
   padding: 0px !important;
   margin: 0px !important;
   background: #ffffff;
   height: 56px;
   font-weight: 600;
-  /* color: black; */
   border: 1px solid black;
   border-radius: 10px;
 }
@@ -139,11 +236,10 @@ ul li li {
 }
 
 input {
-  border-radius: 10px;
-  border: 1px solid #000;
+  border: 1px solid rgb(118, 118, 118);
   padding-left: 1em;
   padding: 1.1em 0.9em;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 input:focus {
@@ -152,11 +248,12 @@ input:focus {
 
 .button {
   margin: 2em 1em;
-  background: #ffffff;
+  background: inherit;
   border: none;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
+  width: fit-content;
 }
 
 .icon:hover,
@@ -173,6 +270,18 @@ input:focus {
 .result {
   margin-left: 5em;
   margin-right: 10em;
+}
+
+@media (max-width: 550px) {
+  .button {
+    margin: 1em 0;
+  }
+
+  .result {
+    width: fit-content;
+    margin: 0 auto;
+    padding-bottom: 2em;
+  }
 }
 
 .result p:last-of-type {
@@ -213,10 +322,14 @@ input:focus {
   align-items: center;
 }
 
-.rates-options ul {
+.rates-options label:first-of-type {
   position: relative;
   width: 50%;
   padding: 0;
+}
+
+.rates-options label:last-of-type p {
+  padding: 7px 20px 10px;
 }
 
 .rates-options button {
@@ -243,6 +356,12 @@ input:focus {
 .rate-current {
   z-index: 5;
 }
+
+/* .rate-current {
+  display: flex;
+  justify-content: space-around;
+} */
+
 .rate-icon {
   margin-left: 1em;
 }
@@ -271,4 +390,15 @@ input:focus {
 
 .rates-data div {
   display: flex;
+}
+
+@media (max-width: 550px) {
+  .rates {
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .rates-options label:first-of-type ul {
+    padding: 0;
+  }
 }
