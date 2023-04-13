@@ -37,6 +37,10 @@ a:hover {
   padding-top: 2em;
 }
 
+.footer {
+  padding-bottom: 2em;
+}
+
 @media (max-width: 900px) {
   .nav,
   .footer {
@@ -75,11 +79,19 @@ a:hover {
 }
 
 /* converter */
+.canvas {
+  width: 70%;
+  margin: 4em auto 8em;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
+  padding: 1em 0;
+}
 
 .centre-container {
   width: 70%;
-  height: 400px;
-  margin: 4em auto 8em;
+  height: 350px;
+  margin: 4em auto;
   border-radius: 10px;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
   overflow: auto;
@@ -100,10 +112,10 @@ a:hover {
 }
 
 @media (max-width: 1250px) {
-  .centre-container {
+  .centre-container,
+  .canvas {
     width: 80%;
     overflow: unset;
-    margin-bottom: 4em;
   }
 
   .content-container {
@@ -120,7 +132,7 @@ a:hover {
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 950px) {
   .content-container {
     flex-direction: column;
   }
@@ -137,7 +149,7 @@ a:hover {
   cursor: pointer;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 680px) {
   .currency-container {
     flex-direction: column;
   }
@@ -152,7 +164,8 @@ a:hover {
     transform: rotate(90deg);
   }
 
-  .centre-container {
+  .centre-container,
+  .canvas {
     height: auto;
     width: 90%;
   }
@@ -272,7 +285,7 @@ input:focus {
   margin-right: 10em;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 680px) {
   .button {
     margin: 1em 0;
   }
@@ -345,7 +358,7 @@ input:focus {
 
 .rate-select {
   position: absolute;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .rate-select ul {

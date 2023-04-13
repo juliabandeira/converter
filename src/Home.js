@@ -1,13 +1,16 @@
 import React from "react";
 import { json, checkStatus } from "./utils";
 import $ from "jquery";
-import "react-dropdown/style.css";
+import Chart from "chart.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 class Convert extends React.Component {
   constructor(props) {
     super(props);
+
+    const params = new URLSearchParams(props.location.search);
+
     this.state = {
       currencies: [],
       fromCurrency: "USD",
@@ -18,6 +21,7 @@ class Convert extends React.Component {
       amount: 10,
       results: [],
       error: "",
+      showComponent: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -26,6 +30,12 @@ class Convert extends React.Component {
     this.changeFromCurrency = this.changeFromCurrency.bind(this);
     this.changeToCurrency = this.changeToCurrency.bind(this);
     this.swapCurrencies = this.swapCurrencies.bind(this);
+    this.chartRef = React.createRef();
+    this.displayComponent = this.displayComponent.bind(this);
+  }
+
+  displayComponent() {
+    this.setState({ showComponent: true });
   }
 
   componentDidMount() {
@@ -83,10 +93,59 @@ class Convert extends React.Component {
         this.setState({ error: error.message });
       });
 
-    $(".result").attr("style", "display:block");
-
     this.setState({ results: [] });
+    this.getHistoricalRates(fromCurrency, toCurrency);
+    this.displayComponent();
   }
+
+  getHistoricalRates = (fromCurrency, toCurrency) => {
+    const endDate = new Date().toISOString().split("T")[0];
+    const startDate = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+
+    fetch(
+      `https://api.frankfurter.app/${startDate}..${endDate}?from=${fromCurrency}&to=${toCurrency}`
+    )
+      .then(checkStatus)
+      .then(json)
+      .then((data) => {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        const chartLabels = Object.keys(data.rates);
+        const chartData = Object.values(data.rates).map(
+          (rate) => rate[toCurrency]
+        );
+        const chartLabel = `${fromCurrency} to ${toCurrency} Chart`;
+        this.buildChart(chartLabels, chartData, chartLabel);
+      })
+      .catch((error) => console.error(error.message));
+  };
+
+  buildChart = (labels, data, label) => {
+    const chartRef = this.chartRef.current.getContext("2d");
+    if (typeof this.chart !== "undefined") {
+      this.chart.destroy();
+    }
+    this.chart = new Chart(this.chartRef.current.getContext("2d"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: label,
+            data,
+            fill: false,
+            tension: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
+  };
 
   render() {
     const {
@@ -98,74 +157,85 @@ class Convert extends React.Component {
       fromCurrency,
       toCurrency,
       currentAmount,
+      showComponent,
     } = this.state;
 
     return (
-      <div className="centre-container">
-        <div className="content-container">
-          <div>
-            <label className="currency">
-              Amount
-              <input
-                type="text"
-                id="amount"
-                value={amount}
-                onChange={this.changeAmount}
-              />
-            </label>
-          </div>
-          <div className="currency-container">
-            <label className="currency">
-              From:
-              <select value={fromCurrency} onChange={this.changeFromCurrency}>
-                <option value={fromCurrency}>{fromCurrency}</option>
-                {currencies.map((currency, index) => {
-                  return <option value={currency}>{currency}</option>;
-                })}
-              </select>
-            </label>
-            <div className="icon" onClick={this.swapCurrencies}>
-              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
+      <React.Fragment>
+        <div className="centre-container">
+          <div className="content-container">
+            <div>
+              <label className="currency">
+                Amount
+                <input
+                  type="text"
+                  id="amount"
+                  value={amount}
+                  onChange={this.changeAmount}
+                />
+              </label>
             </div>
-            <label className="currency">
-              To:
-              <select value={toCurrency} onChange={this.changeToCurrency}>
-                <option value={toCurrency}>{toCurrency}</option>
-                {currencies.map((currency, index) => {
-                  return (
-                    <option value={currency}>
-                      {" "}
-                      <img
-                        src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
-                          0,
-                          -1
-                        )}.png`}
-                        alt=""
-                      />{" "}
-                      {currency}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-            <button
-              type="button"
-              onClick={this.handleSubmit}
-              className="button"
-            >
-              ok
-            </button>
+            <div className="currency-container">
+              <label className="currency">
+                From:
+                <select value={fromCurrency} onChange={this.changeFromCurrency}>
+                  <option value={fromCurrency}>{fromCurrency}</option>
+                  {currencies.map((currency, index) => {
+                    return <option value={currency}>{currency}</option>;
+                  })}
+                </select>
+              </label>
+              <div className="icon" onClick={this.swapCurrencies}>
+                <FontAwesomeIcon icon={faArrowRightArrowLeft} />
+              </div>
+              <label className="currency">
+                To:
+                <select value={toCurrency} onChange={this.changeToCurrency}>
+                  <option value={toCurrency}>{toCurrency}</option>
+                  {currencies.map((currency, index) => {
+                    return (
+                      <option value={currency}>
+                        {" "}
+                        <img
+                          src={`https://www.countryflagicons.com/FLAT/64/${currency.slice(
+                            0,
+                            -1
+                          )}.png`}
+                          alt=""
+                        />{" "}
+                        {currency}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              <button
+                type="button"
+                onClick={this.handleSubmit}
+                className="button"
+              >
+                ok
+              </button>
+            </div>
           </div>
+          {showComponent && (
+            <div className="result">
+              <p>
+                {currentAmount} {currentFromCurrency} =
+              </p>
+              <p>
+                {Object.values(results)} {currentToCurrency}
+              </p>
+            </div>
+          )}
         </div>
-        <div className="result" style={{ display: "none" }}>
-          <p>
-            {currentAmount} {currentFromCurrency} =
-          </p>
-          <p>
-            {Object.values(results)} {currentToCurrency}
-          </p>
-        </div>
-      </div>
+        {showComponent && (
+          <div className="canvas">
+            {" "}
+            <canvas ref={this.chartRef} />
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }
