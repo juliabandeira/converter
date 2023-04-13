@@ -1,6 +1,5 @@
 import React from "react";
 import { json, checkStatus } from "./utils";
-import $ from "jquery";
 import Chart from "chart.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -8,9 +7,6 @@ import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 class Convert extends React.Component {
   constructor(props) {
     super(props);
-
-    const params = new URLSearchParams(props.location.search);
-
     this.state = {
       currencies: [],
       fromCurrency: "USD",
